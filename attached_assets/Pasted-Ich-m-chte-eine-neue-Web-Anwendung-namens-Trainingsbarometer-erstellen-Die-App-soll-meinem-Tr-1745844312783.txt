@@ -1,0 +1,93 @@
+Ich möchte eine neue Web-Anwendung namens **"Trainingsbarometer"** erstellen. Die App soll meinem Trainerteam und mir helfen, die Leistung unserer Fußballspieler präzise zu dokumentieren, auszuwerten und langfristig zu verbessern. Die komplette Benutzeroberfläche soll auf **Deutsch** sein.
+ 
+🎯 Ziel: Baue ein sauberes, skalierbares Grundgerüst mit Frontend (Tailwind CSS) und optionalem Node.js/Express-Backend.
+ 
+🛠 Deine Rolle: Du bist mein erfahrener Full-Stack-Entwickler mit Fokus auf Replit, Node.js, Express, Tailwind CSS und moderner Webentwicklung.
+ 
+---
+ 
+### 👉 Bitte setze Folgendes um:
+ 
+#### 1. Backend-Setup (optional, vorbereitend):
+
+- `npm init -y`
+
+- `express` installieren
+
+- `server.js` erstellen:
+
+  - Einfacher Express-Server
+
+  - Statisches Verzeichnis `public`
+
+  - Lauscht auf Port 3000
+
+  - Kommentar: `// TODO: Zukünftige API Endpunkte hier einfügen`
+ 
+#### 2. Frontend-Setup:
+
+- Ordner `public`
+
+- Dateien: `index.html`, `app.js`, `output.css`
+
+- Verlinkung in `index.html` korrekt herstellen
+ 
+#### 3. Tailwind CSS:
+
+- Installiere Tailwind + PostCSS + Autoprefixer als Dev-Dependencies
+
+- `tailwind.config.js`: Content auf `./public/**/*.{html,js}` setzen
+
+- `postcss.config.js` + `src/input.css` mit Tailwind-Direktiven
+
+- Build-Skript `"build:css"` in `package.json`
+
+- Führe Build einmal aus (output in `public/output.css`)
+ 
+#### 4. UI-Grundstruktur (in `index.html` mit Tailwind):
+
+- **Header:** App-Name „Trainingsbarometer“ + Platzhalter für Login/Benutzername
+
+- **Main:** Drei Platzhalter-Abschnitte:
+
+  - `#eingabe-bereich`
+
+  - `#ergebnis-liste`
+
+  - `#auswertungen`
+
+- **Footer:** Einfache Textzeile
+
+- Alles übersichtlich und mobilfreundlich stylen mit Tailwind-Klassen
+ 
+#### 5. Replit Auth (optional):
+
+- Platzhalter im Header (`#user-info`)
+
+- In `app.js`: Button "Login" anzeigen, Kommentar `// TODO: Replit Auth einbauen`
+ 
+#### 6. Platzhalter für Logik:
+
+- In `server.js` und `app.js`: `// TODO:` für API-Endpunkte & Logik
+ 
+---
+ 
+📌 Hinweis:
+
+- Sprache: **Deutsch**
+
+- Zielgruppe: Trainer & Co-Trainer
+
+- Design: **Einfach**, **intuitiv**, **mobilfreundlich**
+
+- Best Practices & sauberen Code verwenden
+
+- Bitte jeden abgeschlossenen Schritt bestätigen
+ 
+---
+ 
+Starte bitte mit dem Setup und melde dich, sobald das Grundgerüst steht ✅
+
+ 
+Denke Schritt für Schritt: Bestätige nach Abschluss jeden der ausgeführten Hauptaufgabenbereiche (Backend, Frontend, Tailwind, UI, Auth, Platzhalter) und erkläre kurz, was du eingerichtet hast. Gib mir am Ende Bescheid, wenn das Grundgerüst steht.    - würde ich unten noch austauschen
+ 
