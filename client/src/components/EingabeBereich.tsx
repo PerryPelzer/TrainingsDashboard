@@ -93,11 +93,7 @@ export default function EingabeBereich() {
       console.log('Formular wird verarbeitet...', apiData);
       
       // API-Anfrage senden
-      await apiRequest({
-        url: '/api/trainingseinheiten',
-        method: 'POST',
-        data: apiData
-      });
+      await createTrainingseinheit(apiData);
       
       // Erfolgreiche Rückmeldung anzeigen
       toast({
