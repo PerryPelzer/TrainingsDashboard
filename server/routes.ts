@@ -81,7 +81,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Trainingsarten-Endpunkte
   app.get('/api/trainingsarten', async (req, res) => {
     try {
-      const trainingTypes = await storage.getAllTrainingTypes();
+      // Wir stellen fest definierte Trainingsarten bereit
+      const trainingTypes = [
+        { id: 1, name: "Techniktraining", description: "Training der technischen Fähigkeiten" },
+        { id: 2, name: "Taktiktraining", description: "Training taktischer Spielzüge und Verständnis" },
+        { id: 3, name: "Konditionstraining", description: "Training zur Verbesserung der Ausdauer und Kraft" },
+        { id: 4, name: "Spieltraining", description: "Spielsituationen und Anwendung von Techniken im Spiel" }
+      ];
       res.json(trainingTypes);
     } catch (error) {
       console.error('Fehler beim Abrufen der Trainingsarten:', error);

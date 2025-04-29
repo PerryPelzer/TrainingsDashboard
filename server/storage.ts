@@ -107,7 +107,12 @@ export class MemStorage implements IStorage {
   
   async createTrainingSession(insertSession: InsertTrainingseinheit): Promise<Trainingseinheit> {
     const id = this.trainingSessionCurrentId++;
-    const session: Trainingseinheit = { ...insertSession, id };
+    // Hier fügen wir das erforderliche erfasstAm-Feld hinzu
+    const session: Trainingseinheit = { 
+      ...insertSession, 
+      id,
+      erfasstAm: new Date() 
+    };
     this.trainingSessions.set(id, session);
     return session;
   }
