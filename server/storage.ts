@@ -1,10 +1,8 @@
 import {
-  users, players, trainingTypes, trainingSessions, playerEvaluations,
+  users, spieler, trainingseinheiten,
   type User, type InsertUser,
-  type Player, type InsertPlayer,
-  type TrainingType, type InsertTrainingType,
-  type TrainingSession, type InsertTrainingSession,
-  type PlayerEvaluation, type InsertPlayerEvaluation
+  type Spieler, type InsertSpieler,
+  type Trainingseinheit, type InsertTrainingseinheit
 } from "@shared/schema";
 
 export interface IStorage {
@@ -166,13 +164,13 @@ export class MemStorage implements IStorage {
   
   async getPlayerEvaluationsByPlayer(playerId: number): Promise<PlayerEvaluation[]> {
     return Array.from(this.playerEvaluations.values()).filter(
-      eval => eval.player_id === playerId
+      evaluation => evaluation.player_id === playerId
     );
   }
   
   async getPlayerEvaluationsBySession(sessionId: number): Promise<PlayerEvaluation[]> {
     return Array.from(this.playerEvaluations.values()).filter(
-      eval => eval.session_id === sessionId
+      evaluation => evaluation.session_id === sessionId
     );
   }
   

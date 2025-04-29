@@ -1,37 +1,134 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, useEffect } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import type { Spieler } from '@shared/schema';
+import { getSpieler, createTrainingseinheit } from '@/lib/api';
 
 export default function EingabeBereich() {
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [players, setPlayers] = useState<Spieler[]>([]);
+  
   const [formData, setFormData] = useState({
     datum: '',
     trainingsart: '',
-    spieler: '',
+    spielerId: '',
     leistungsbewertung: '',
     einsatz: '',
     fitness: '',
     anmerkungen: ''
   });
 
+  // Spieler laden
+  useEffect(() => {
+    const loadPlayers = async () => {
+      try {
+        const fetchedPlayers = await getSpieler();
+        setPlayers(fetchedPlayers);
+      } catch (err) {
+        console.error('Fehler beim Laden der Spieler:', err);
+        setError('Spieler konnten nicht geladen werden.');
+      }
+    };
+    
+    loadPlayers();
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
+    
+    // Bei Änderungen Fehlermeldung zurücksetzen
+    if (error) {
+      setError(null);
+    }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const validateForm = (): boolean => {
+    // Pflichtfelder prüfen
+    if (!formData.datum) {
+      setError('Bitte geben Sie ein Datum an.');
+      return false;
+    }
+    if (!formData.trainingsart) {
+      setError('Bitte wählen Sie eine Trainingsart aus.');
+      return false;
+    }
+    if (!formData.spielerId) {
+      setError('Bitte wählen Sie einen Spieler aus.');
+      return false;
+    }
+    if (!formData.leistungsbewertung || !formData.einsatz || !formData.fitness) {
+      setError('Bitte füllen Sie alle Bewertungsfelder aus.');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // TODO: API Endpunkte für die Speicherung der Trainingsdaten implementieren
-    console.log('Formular wird verarbeitet...', formData);
-    alert('Trainingseinheit erfolgreich erfasst!');
     
-    // Formular zurücksetzen
-    setFormData({
-      datum: '',
-      trainingsart: '',
-      spieler: '',
-      leistungsbewertung: '',
-      einsatz: '',
-      fitness: '',
-      anmerkungen: ''
-    });
+    // Form validieren
+    if (!validateForm()) {
+      return;
+    }
+    
+    // Anzeigen, dass die Anfrage verarbeitet wird
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Bereite die Daten für das API-Format vor
+      const apiData = {
+        datum: formData.datum,
+        trainingsart: formData.trainingsart,
+        spielerId: parseInt(formData.spielerId),
+        leistungsbewertung: parseInt(formData.leistungsbewertung),
+        einsatz: parseInt(formData.einsatz),
+        fitness: parseInt(formData.fitness),
+        anmerkungen: formData.anmerkungen,
+        erfasstVon: 1 // Standardmäßig der erste Trainer
+      };
+
+      console.log('Formular wird verarbeitet...', apiData);
+      
+      // API-Anfrage senden
+      await apiRequest({
+        url: '/api/trainingseinheiten',
+        method: 'POST',
+        data: apiData
+      });
+      
+      // Erfolgreiche Rückmeldung anzeigen
+      toast({
+        title: 'Erfolg!',
+        description: 'Trainingseinheit erfolgreich erfasst',
+      });
+      
+      // Formular zurücksetzen
+      setFormData({
+        datum: '',
+        trainingsart: '',
+        spielerId: '',
+        leistungsbewertung: '',
+        einsatz: '',
+        fitness: '',
+        anmerkungen: ''
+      });
+    } catch (err: any) {
+      console.error('Fehler beim Speichern der Trainingseinheit:', err);
+      
+      // Fehlermeldung anzeigen
+      setError(err.message || 'Ein unbekannter Fehler ist aufgetreten.');
+      
+      toast({
+        title: 'Fehler',
+        description: 'Die Trainingseinheit konnte nicht gespeichert werden.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -70,19 +167,24 @@ export default function EingabeBereich() {
           </div>
           
           <div className="mb-4">
-            <label htmlFor="spieler" className="block text-sm font-medium text-gray-700 mb-1">Spieler</label>
+            <label htmlFor="spielerId" className="block text-sm font-medium text-gray-700 mb-1">Spieler</label>
             <select 
-              id="spieler" 
-              value={formData.spieler}
+              id="spielerId" 
+              value={formData.spielerId}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+              disabled={isLoading}
             >
               <option value="">Spieler auswählen</option>
-              <option value="player1">Max Müller</option>
-              <option value="player2">Thomas Schmidt</option>
-              <option value="player3">Lukas Weber</option>
-              <option value="player4">Felix Becker</option>
+              {players.map((player) => (
+                <option key={player.id} value={player.id}>
+                  {player.name} ({player.position})
+                </option>
+              ))}
             </select>
+            {players.length === 0 && (
+              <p className="text-xs text-gray-500 mt-1">Spieler werden geladen...</p>
+            )}
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
