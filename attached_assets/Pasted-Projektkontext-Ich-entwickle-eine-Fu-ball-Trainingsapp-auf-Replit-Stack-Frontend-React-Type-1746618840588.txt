@@ -1,0 +1,45 @@
+Projektkontext:
+Ich entwickle eine Fußball-Trainingsapp auf Replit.
+Stack:
+Frontend: React + TypeScript
+Backend: Node.js + Express + TypeScript
+Aktuelle Situation: Der Server speichert Trainingsdaten derzeit in einem In-Memory-Array (server/storage.ts).
+Ziel: Umstellung auf eine persistente PostgreSQL-Datenbank mit Prisma ORM für dauerhafte Speicherung. Die PostgreSQL-Datenbank wird über Supabase bereitgestellt und die Verbindungs-URL ist in der Umgebungsvariable DATABASE_URL hinterlegt.
+Deine detaillierten Aufgaben:
+Prisma Setup & Konfiguration:
+Installiere die notwendigen Prisma-Pakete (prisma als Dev-Dependency, @prisma/client als reguläre Dependency).
+Initialisiere Prisma im Projekt (z.B. mit npx prisma init --datasource-provider postgresql). Stelle sicher, dass die schema.prisma Datei im prisma Verzeichnis angelegt wird.
+Konfiguriere die datasource db in prisma/schema.prisma, um process.env.DATABASE_URL für die Verbindung zur PostgreSQL-Datenbank zu verwenden.
+Datenmodell Definition (prisma/schema.prisma):
+Definiere ein model Trainingseinheit mit exakt folgenden Feldern und Attributen:
+id Int @id @default(autoincrement())
+titel String
+beschreibung String
+dauer Int (repräsentiert Minuten)
+datum DateTime
+erstelltAm DateTime @default(now()) (optional, aber gute Praxis für Timestamps)
+aktualisiertAm DateTime @updatedAt (optional, aber gute Praxis für Timestamps)
+Datenbankmigration:
+Generiere eine neue Prisma-Migration basierend auf dem definierten Schema (z.B. mit npx prisma migrate dev --name init_trainingseinheit).
+Stelle sicher, dass die Migration erfolgreich auf die PostgreSQL-Datenbank angewendet wird und die Tabelle Trainingseinheit erstellt.
+Prisma Client Instanz:
+Erstelle eine Datei server/prisma.ts (oder server/db.ts).
+In dieser Datei: Importiere PrismaClient von @prisma/client, erstelle eine globale Instanz des Prisma Clients und exportiere diese, um sie in anderen Teilen der Anwendung wiederverwenden zu können (Singleton-Pattern).
+Anpassung der Speicherlogik (server/storage.ts):
+Importiere die Prisma Client Instanz aus server/prisma.ts.
+Überarbeite die Funktion saveTrainingseinheit(data: TrainingseinheitInput): Promise<TrainingseinheitOutput>:
+Sie soll nun prisma.trainingseinheit.create({ data: ... }) verwenden, um die Daten in der Datenbank zu speichern.
+Passe die Typen TrainingseinheitInput und TrainingseinheitOutput entsprechend an (oder stelle sicher, dass die von Prisma generierten Typen verwendet werden können).
+Überarbeite die Funktion getAllTrainingseinheiten(): Promise<TrainingseinheitOutput[]>:
+Sie soll nun prisma.trainingseinheit.findMany() verwenden, um alle Trainingseinheiten abzurufen.
+(Optional, aber gut für später: Füge eine Sortierung nach datum absteigend hinzu).
+Entferne oder kommentiere die alte In-Memory-Array-Logik vollständig aus.
+API-Endpunkt-Verifizierung (server/routes.ts):
+Stelle sicher, dass die API-Endpunkte POST /api/trainingseinheiten und GET /api/trainingseinheiten nach den Änderungen in storage.ts weiterhin korrekt funktionieren und mit der neuen Prisma-Datenbankinteraktion arbeiten, ohne dass Änderungen an den Routen selbst notwendig sein sollten (außer ggf. Typanpassungen, falls sich die Rückgabetypen von storage.ts ändern).
+Allgemeine Anforderungen & Hinweise:
+Verwende durchgehend TypeScript und halte dich an Prisma Best Practices.
+Der Code muss sauber, modular und gut kommentiert sein.
+Das Setup muss auf Replit lauffähig sein.
+Wichtig: Die Umgebungsvariable DATABASE_URL muss korrekt ausgelesen und verwendet werden.
+Erklärungen:
+Bitte gib nach Abschluss jedes der oben genannten Hauptschritte (1-6) eine kurze Erklärung, was du implementiert hast und warum.
